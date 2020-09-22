@@ -77,10 +77,16 @@ class EmailInput extends StatelessWidget {
     return BlocBuilder<MyFormBloc, MyFormState>(
       buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
-        emailcontroler.text = state.email.value;
+        emailcontroler.value = emailcontroler.value.copyWith(
+          text: state.email.value,
+          selection: TextSelection.fromPosition(
+            TextPosition(offset: state.email.value.length),
+          ),
+        );
         return TextFormField(
           key: const Key('loginForm_emailInput_textField'),
           controller: emailcontroler,
+          autofocus: false,
           decoration: InputDecoration(
             icon: const Icon(Icons.email),
             labelText: 'Email',
@@ -104,10 +110,17 @@ class PasswordInput extends StatelessWidget {
     return BlocBuilder<MyFormBloc, MyFormState>(
       buildWhen: (previous, current) => previous.password != current.password,
       builder: (context, state) {
-        passwordcontroler.text = state.password.value;
+        passwordcontroler.value = passwordcontroler.value.copyWith(
+          text: state.password.value,
+          selection: TextSelection.fromPosition(
+            TextPosition(offset: state.password.value.length),
+          ),
+        );
+
         return TextFormField(
           key: const Key('loginForm_passwordInput_textField'),
           controller: passwordcontroler,
+          autofocus: false,
           decoration: InputDecoration(
             icon: const Icon(Icons.lock),
             labelText: 'Password',
