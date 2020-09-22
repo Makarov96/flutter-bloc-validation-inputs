@@ -29,9 +29,14 @@ class App extends StatelessWidget {
 class MyForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var emailcontroler = TextEditingController();
+    var passwordcontroler = TextEditingController();
+
     return BlocListener<MyFormBloc, MyFormState>(
       listener: (context, state) {
         if (state.status.isSubmissionSuccess) {
+          emailcontroler.clear();
+          passwordcontroler.clear();
           Scaffold.of(context).hideCurrentSnackBar();
           showDialog<void>(
             context: context,
@@ -50,8 +55,8 @@ class MyForm extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: <Widget>[
-            EmailInput(),
-            PasswordInput(),
+            EmailInput(emailcontroler: emailcontroler),
+            PasswordInput(passwordcontroler: passwordcontroler),
             SubmitButton(),
           ],
         ),
@@ -61,13 +66,21 @@ class MyForm extends StatelessWidget {
 }
 
 class EmailInput extends StatelessWidget {
+  EmailInput({
+    Key key,
+    @required this.emailcontroler,
+  }) : super(key: key);
+  TextEditingController emailcontroler;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MyFormBloc, MyFormState>(
       buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
+        emailcontroler.text = state.email.value;
         return TextFormField(
-          initialValue: state.email.value,
+          key: const Key('loginForm_emailInput_textField'),
+          controller: emailcontroler,
           decoration: InputDecoration(
             icon: const Icon(Icons.email),
             labelText: 'Email',
@@ -84,13 +97,17 @@ class EmailInput extends StatelessWidget {
 }
 
 class PasswordInput extends StatelessWidget {
+  PasswordInput({Key key, @required this.passwordcontroler}) : super(key: key);
+  TextEditingController passwordcontroler;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MyFormBloc, MyFormState>(
       buildWhen: (previous, current) => previous.password != current.password,
       builder: (context, state) {
+        passwordcontroler.text = state.password.value;
         return TextFormField(
-          initialValue: state.password.value,
+          key: const Key('loginForm_passwordInput_textField'),
+          controller: passwordcontroler,
           decoration: InputDecoration(
             icon: const Icon(Icons.lock),
             labelText: 'Password',
